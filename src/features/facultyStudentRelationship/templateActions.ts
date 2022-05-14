@@ -21,8 +21,7 @@ export async function getStudents() {
 export async function addStudents(students: any[]) {
   try {
     debugger;
-    const data = await axios.post(`${API_URL}/faculty_student_relationship/create`, {
-      payload: { students },
+    const data = await axios.post(`${API_URL}/faculty_student_relationship/create`, students, {
       headers: { Authorization: `Bearer ${token}` },
     });
     // console.log(data);
@@ -31,15 +30,19 @@ export async function addStudents(students: any[]) {
     console.log(error);
   }
 }
-// export async function deleteStudents(students: any) {
-//   try {
-//     const data = await axios.delete(`${API_URL}/faculty_student_relationship/delete/${id}`, {
-//       students,
-//       headers: { Authorization: `Bearer ${token}` },
-//     });
-//     // console.log(data);
-//     return data;
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
+export async function deleteStudents(students: any) {
+  try {
+    debugger;
+    const data = await axios.post(
+      `${API_URL}/faculty_student_relationship/delete/${id}`,
+      students,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    // console.log(data);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}

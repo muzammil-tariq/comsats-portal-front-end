@@ -83,20 +83,23 @@ export const AddStudents = () => {
   }, [students]);
 
   const handleClick = async () => {
-    if (data.length === 0) {
-      setInputError("Invalid Fields!");
-      return;
-    }
-    setInputError("");
-    setFlag(1);
-    const dataItem = data.map((item: any) => {
-      return {
-        faculty: localStorage.getItem("facultyId"),
-        student: item,
-      };
-    });
-    await addStudents(dataItem);
-    console.log(flag);
+    try {
+      if (data.length === 0) {
+        setInputError("Invalid Fields!");
+        return;
+      }
+      setInputError("");
+      setFlag(1);
+      const dataItem = data.map((item: any) => {
+        return {
+          faculty: localStorage.getItem("facultyId"),
+          student: item,
+        };
+      });
+      await addStudents(dataItem);
+      alert("Added successfully");
+      console.log(flag);
+    } catch (error) {}
   };
   const fileUpload = (e: any) => {
     console.log(e.target.files[0]);

@@ -1,48 +1,16 @@
-/* eslint-disable react/no-children-prop */
 import * as React from "react";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router";
-import { DockTwoTone, MoreHoriz, Person } from "@material-ui/icons";
-import SummarizeIcon from "@mui/icons-material/Summarize";
-import ViewInArIcon from "@mui/icons-material/ViewInAr";
-import { IconButton, Menu, MenuItem, Select, Tooltip } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { IconButton, Menu, MenuItem } from "@mui/material";
+import { DataGrid, GridCellValue, GridColDef, GridMoreVertIcon } from "@mui/x-data-grid";
 import {
-  DataGrid,
-  GridCellValue,
-  GridColDef,
-  GridMoreVertIcon,
-  GridToolbar,
-} from "@mui/x-data-grid";
-import { deleteDeliverable, getAllDeliverables } from "src/features/deliverable/deliverableActions";
-import {
-  deleteDeliverableError,
-  deleteDeliverableSuccess,
-  deliverableSelector,
-} from "src/features/deliverable/deliverableSlice";
-import { getStudents } from "src/features/facultyStudentRelationship/templateActions";
-import {
-  deleteTemplate,
-  getAllTemplates,
-  updateTemplate,
-} from "src/features/template/templateActions";
-import {
-  deleteTemplateError,
-  deleteTemplateSuccess,
-  templateSelector,
-} from "src/features/template/templateSlice";
+  deleteStudents,
+  getStudents,
+} from "src/features/facultyStudentRelationship/templateActions";
+import { getAllTemplates } from "src/features/template/templateActions";
 import ConfirmationDialog from "../base/ConfirmationDialog";
-import { CustomAlert } from "../base/CustomAlert";
-import { CustomButton } from "../base/CustomButton";
-import { CustomInput } from "../base/CustomInput";
 import { CustomTypography } from "../base/CustomTypography";
 
 export default function AllStudents() {
-  const history = useHistory();
-  // rows for table
-  const [rows, setRows] = useState<any>([]);
-  const [dFlag, setdFlag] = useState(0);
-  const [uFlag, setuFlag] = useState(0);
   const [students, setStudents] = React.useState([]);
 
   React.useEffect(() => {
@@ -50,7 +18,6 @@ export default function AllStudents() {
   }, []);
   const getStudentsByFacultyId = async () => {
     const data = await getStudents();
-    debugger;
     console.log(data);
     setStudents(
       data?.data.map((item: any) => {
@@ -64,16 +31,6 @@ export default function AllStudents() {
   // useDispatch in case of calling an API
   const dispatch = useDispatch();
   // useSelector to get any state in the store
-  const {
-    templatesFailed,
-    templatesSuccessful,
-    templates,
-    gettingTemplates,
-    templateDeleteFailed,
-    templateDeleteSuccessful,
-    templateUpdateFailed,
-    templateUpdateSuccessful,
-  } = useSelector(templateSelector);
 
   const getTemps = async () => {
     try {
@@ -84,30 +41,6 @@ export default function AllStudents() {
       // console.log(templatesFailed);
     }
   };
-  useEffect(() => {
-    getTemps();
-
-    if (templates) {
-      const st: any = templates.map(({ _id, deliverable, title, file }) => {
-        const id = _id;
-        // console.log(id);
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        const deliverableName: any = deliverable.title;
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        const deliverableDeadline: any = deliverable.deadline;
-        return {
-          id,
-          title,
-          deliverableName,
-          deliverableDeadline,
-        };
-      });
-      setRows(st);
-      console.log(st);
-    }
-  }, []);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [currRow, setCurrRow] = React.useState<any>(null);
   // form dialog for delete
@@ -123,7 +56,10 @@ export default function AllStudents() {
   const handleDelete = async () => {
     handleCloseDelete();
     // delete call
-    await dispatch(deleteTemplate(currRow.id));
+    try {
+      await deleteStudents([currRow.id]);
+      getStudentsByFacultyId();
+    } catch (error) {}
   };
   const open = Boolean(anchorEl);
 
@@ -144,35 +80,11 @@ export default function AllStudents() {
   const handleChangeU = (prop: any) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setUValues({ ...uvalues, [prop]: event.target.value });
   };
-  const handleUpdate = async () => {
-    handleCloseUpdate();
-    // delete call
-    await dispatch(updateTemplate(uvalues, currRow.id));
-    getTemps();
-    if (templates) {
-      const st: any = templates.map(({ _id, deliverable, title, file }) => {
-        const id = _id;
-        // console.log(id);
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        const deliverableName: any = deliverable.title;
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        const deliverableDeadline: any = deliverable.deadline;
-        return {
-          id,
-          title,
-          deliverableName,
-          deliverableDeadline,
-        };
-      });
-      setRows(st);
-      // console.log(st);
-    }
-  };
   const options = ["Delete"];
 
   const columns: GridColDef[] = [
+    { field: "id", headerName: "ID", width: 270 },
+
     {
       field: "firstName",
       headerName: "FirstName",
@@ -280,26 +192,7 @@ export default function AllStudents() {
         //   Toolbar: GridToolbar,
         // }}
       />
-      {/* Update Popup */}
-      <ConfirmationDialog
-        title="Update Template"
-        handleClose={handleCloseUpdate}
-        open={openUpdateDialog}
-        doneText="Update"
-        closeText="Cancel"
-        handleSubmit={handleUpdate}
-        children={
-          <div style={{ padding: "3rem" }}>
-            <div>
-              <CustomInput
-                value={uvalues.title}
-                handleChange={handleChangeU("title")}
-                field={"text"}
-              />
-            </div>
-          </div>
-        }
-      />
+
       {/* Delete Popup */}
       <ConfirmationDialog
         title="Delete Template"
@@ -308,28 +201,15 @@ export default function AllStudents() {
         handleSubmit={handleDelete}
         closeText="Cancel"
         doneText="Confirm"
-        children={
-          <div style={{ padding: "1rem" }}>
-            <CustomTypography
-              text="Are you sure you want to delete the student?"
-              variant="h6"
-              component="h6"
-            />
-          </div>
-        }
-      />
-      <div>
-        {/* delete */}
-        {templateDeleteSuccessful && (
-          <CustomAlert type="success" content={"Template deleted successfully!"} />
-        )}
-        {templateDeleteFailed && <CustomAlert type="error" content={"Template not deleted!"} />}
-        {/* update */}
-        {templateUpdateSuccessful && (
-          <CustomAlert type="success" content={"Template updated successfully!"} />
-        )}
-        {templateUpdateFailed && <CustomAlert type="error" content={"Template not updated!"} />}
-      </div>
+      >
+        <div style={{ padding: "1rem" }}>
+          <CustomTypography
+            text="Are you sure you want to delete the student?"
+            variant="h6"
+            component="h6"
+          />
+        </div>
+      </ConfirmationDialog>
     </div>
   );
 }
