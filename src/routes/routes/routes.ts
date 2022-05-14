@@ -21,6 +21,7 @@ import MeetingLoggerContainer from "src/containers/MeetingLoggerContainer";
 import ProfileContainer from "src/containers/ProfileContainer";
 import ProfileContainerFaculty from "src/containers/ProfileContainerFaculty";
 import ProjectList from "src/containers/ProjectListContainer";
+import { StudentContainer } from "src/containers/StudentContainer";
 import StudentGroupContainer from "src/containers/StudentGroupContainer";
 import { TemplateContainer } from "src/containers/TemplateContainer";
 
@@ -105,6 +106,13 @@ export const routes = [
     path: "/templates",
     private: true,
     component: TemplateContainer,
+    subRoutes: [],
+  },
+  {
+    title: "students",
+    path: "/students",
+    private: true,
+    component: StudentContainer,
     subRoutes: [],
   },
   {

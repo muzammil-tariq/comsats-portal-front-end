@@ -71,6 +71,14 @@ export const facultyItems = [
     subRoutes: [],
   },
   {
+    title: "Students",
+    path: "/students",
+    private: true,
+    icon: DescriptionIcon,
+    component: Home,
+    subRoutes: [],
+  },
+  {
     title: "Complaints",
     path: "/complaint/managecomplaints",
     private: true,
