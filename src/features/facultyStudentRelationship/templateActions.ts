@@ -7,9 +7,11 @@ const id = localStorage.getItem("facultyId");
 // http://localhost:8000/api/template/all
 // Asynchronous thunk action
 // getting all templates
-export async function getStudents() {
+export async function getStudents(facId?: any) {
   try {
-    const data = await axios.get(`${API_URL}/faculty_student_relationship/get/${id}`, {
+    let facultyId = id;
+    if (facId) facultyId = facId;
+    const data = await axios.get(`${API_URL}/faculty_student_relationship/get/${facultyId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     // console.log(data);
@@ -20,7 +22,6 @@ export async function getStudents() {
 }
 export async function addStudents(students: any[]) {
   try {
-    debugger;
     const data = await axios.post(`${API_URL}/faculty_student_relationship/create`, students, {
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -32,7 +33,6 @@ export async function addStudents(students: any[]) {
 }
 export async function deleteStudents(students: any) {
   try {
-    debugger;
     const data = await axios.post(
       `${API_URL}/faculty_student_relationship/delete/${id}`,
       students,

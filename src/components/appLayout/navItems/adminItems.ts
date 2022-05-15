@@ -19,6 +19,7 @@ import AddFacultyContainer from "src/containers/AddFacultyContainer";
 import AddStudentContainer from "src/containers/AddStudentContainer";
 import { DeliverablesContainer } from "src/containers/DeliverablesContainer";
 import DmcContainer from "src/containers/DmcContainer";
+import { StudentContainer } from "src/containers/facultyStudentRelationshipContainer";
 import ProfileContainer from "src/containers/ProfileContainer";
 import ProjectList from "src/containers/ProjectListContainer";
 import { TemplateContainer } from "src/containers/TemplateContainer";
@@ -91,6 +92,14 @@ export const adminItems = [
     private: true,
     icon: DescriptionIcon,
     component: TemplateContainer,
+    subRoutes: [],
+  },
+  {
+    title: "Faculty Students",
+    path: "/facultyStudents",
+    private: true,
+    icon: DescriptionIcon,
+    component: StudentContainer,
     subRoutes: [],
   },
   {

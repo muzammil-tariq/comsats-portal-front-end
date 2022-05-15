@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useDispatch } from "react-redux";
-import { IconButton, Menu, MenuItem } from "@mui/material";
-import { DataGrid, GridCellValue, GridColDef, GridMoreVertIcon } from "@mui/x-data-grid";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import {
   deleteStudents,
   getStudents,
@@ -19,14 +18,15 @@ export default function AllStudents() {
   const getStudentsByFacultyId = async () => {
     const data = await getStudents();
     console.log(data);
-    setStudents(
-      data?.data.map((item: any) => {
-        return {
-          ...item.student,
-          id: item.student._id,
-        };
-      })
-    );
+    if (data)
+      setStudents(
+        data?.data.map((item: any) => {
+          return {
+            ...item.student,
+            id: item.student._id,
+          };
+        })
+      );
   };
   // useDispatch in case of calling an API
   const dispatch = useDispatch();
@@ -102,82 +102,6 @@ export default function AllStudents() {
       headerName: "Email",
       width: 270,
       editable: true,
-    },
-    // {
-    //   field: "deliverableName",
-    //   headerName: "Deliverable",
-    //   width: 270,
-    //   editable: true,
-    // },
-    // {
-    //   field: "deliverableDeadline",
-    //   headerName: "Deadline",
-    //   width: 300,
-    //   editable: true,
-    // },
-    {
-      field: "manage",
-      // renderHeader: () => null,
-      headerName: "Manage",
-      sortable: false,
-      width: 130,
-      renderCell: (params) => {
-        const handleClose = (e: any, val: string) => {
-          e.stopPropagation(); // don't select this row after clicking
-
-          const { api } = params;
-          const thisRow: Record<string, GridCellValue> = {};
-
-          api
-            .getAllColumns()
-            .filter((c) => c.field !== "__check__" && Boolean(c))
-            .forEach((c) => (thisRow[c.field] = params.getValue(params.id, c.field)));
-          setCurrRow(thisRow);
-          // console.log(thisRow, val);
-          setAnchorEl(null);
-          if (val === "Delete") {
-            handleClickOpenDelete();
-          }
-        };
-        const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-          setAnchorEl(event.currentTarget);
-        };
-        return (
-          <div>
-            <IconButton
-              aria-label="more"
-              id="long-button"
-              aria-controls={open ? "long-menu" : undefined}
-              aria-expanded={open ? "true" : undefined}
-              aria-haspopup="true"
-              onClick={handleClick}
-            >
-              <GridMoreVertIcon />
-            </IconButton>
-            <Menu
-              id="long-menu"
-              MenuListProps={{
-                "aria-labelledby": "long-button",
-              }}
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              PaperProps={{
-                style: {
-                  maxHeight: 40 * 4.5,
-                  width: "10ch",
-                },
-              }}
-            >
-              {options.map((option) => (
-                <MenuItem key={option} onClick={(e: any) => handleClose(e, option)}>
-                  {option}
-                </MenuItem>
-              ))}
-            </Menu>
-          </div>
-        );
-      },
     },
   ];
   return (

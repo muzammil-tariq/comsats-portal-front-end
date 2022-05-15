@@ -17,6 +17,7 @@ import { DeliverablesContainer } from "src/containers/DeliverablesContainer";
 import { DeliverablesContainerStudent } from "src/containers/DeliverablesContainerStudent";
 import DmcContainer from "src/containers/DmcContainer";
 import EvaluatorContainer from "src/containers/EvaluatorContainer";
+import { StudentContainer as FacultyStudentContainer } from "src/containers/facultyStudentRelationshipContainer";
 import MeetingLoggerContainer from "src/containers/MeetingLoggerContainer";
 import ProfileContainer from "src/containers/ProfileContainer";
 import ProfileContainerFaculty from "src/containers/ProfileContainerFaculty";
@@ -113,6 +114,13 @@ export const routes = [
     path: "/students",
     private: true,
     component: StudentContainer,
+    subRoutes: [],
+  },
+  {
+    title: " Faculty Students",
+    path: "/facultyStudents",
+    private: true,
+    component: FacultyStudentContainer,
     subRoutes: [],
   },
   {

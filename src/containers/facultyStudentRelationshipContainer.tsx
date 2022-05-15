@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Tab, Tabs, Typography } from "@mui/material";
-import { AddStudents } from "src/components/students/AddStudents";
-import AllStudents from "src/components/students/AllStudents";
+import { AddStudents } from "src/components/facultyStudentRelationship/AddStudents";
+import AllStudents from "src/components/facultyStudentRelationship/AllStudents";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -47,11 +47,15 @@ export const StudentContainer = () => {
     <Box sx={{ width: "100%" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="All Students" {...a11yProps(0)} />
+          <Tab label="All Faculty Student Relationship" {...a11yProps(0)} />
+          <Tab label="Add New Relationship" {...a11yProps(1)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
         <AllStudents />
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+        <AddStudents />
       </TabPanel>
     </Box>
   );
