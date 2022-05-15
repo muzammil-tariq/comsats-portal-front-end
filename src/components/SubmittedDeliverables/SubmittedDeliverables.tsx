@@ -15,15 +15,15 @@ const SubmittedDeliverables = () => {
       width: 360,
       renderCell: (params) => {
         return (
-          <div>
-            {params.row.rubrics.map((rubric: any) => {
+          <ul>
+            {params.row.rubrics.map((rubric: any, i: number) => {
               return (
-                <>
+                <li key={i} style={{ lineHeight: "20px" }}>
                   {rubric.title} ({rubric.score}) obtained:{rubric.obtained_score}
-                </>
+                </li>
               );
             })}
-          </div>
+          </ul>
         );
       },
     },
@@ -39,6 +39,7 @@ const SubmittedDeliverables = () => {
   const handleGetRowId = (e: any) => {
     return e._id;
   };
+
   useEffect(() => {
     const fetchDeliverables = async () => {
       try {
@@ -46,6 +47,7 @@ const SubmittedDeliverables = () => {
         const response = await axios.get("http://localhost:8000/api/submitted_deliverable/", {
           headers: { Authorization: `Bearer ${token}` },
         });
+        debugger;
         setRows(response.data);
       } catch (error) {
         console.log(error);

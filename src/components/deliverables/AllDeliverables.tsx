@@ -15,6 +15,7 @@ const AllDeliverables: React.FC<Props> = (props) => {
   const [rows, setRows] = useState<any>([]);
 
   const SubmitDeliverable = async (e: any, row: any) => {
+    debugger;
     const token = localStorage.getItem("token");
 
     const file = e.target.files[0];
@@ -26,6 +27,7 @@ const AllDeliverables: React.FC<Props> = (props) => {
     fileData.append("rubrics", JSON.stringify(row.row.totalRubrics));
     fileData.append("title", row.row.title);
     fileData.append("deadline", row.row.deadline);
+    fileData.append("faculty_id", row.row.faculty_id);
 
     try {
       const response = await axios.post(
@@ -116,16 +118,33 @@ const AllDeliverables: React.FC<Props> = (props) => {
   const handleGetRowId = (e: any) => {
     return e._id;
   };
+
   // ============================= useEffect ========================
   useEffect(() => {
-    alert("aa");
     const fetchDeliverables = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:8000/api/deliverable/", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setRows(response.data);
+        const sId = localStorage.getItem("studentId");
+        const fId = localStorage.getItem("facultyId");
+        const type = localStorage.getItem("type");
+        if (type === "STUDENT") {
+          const response = await axios.get(
+            `http://localhost:8000/api/deliverable/getByStudentId/${sId}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          setRows(response.data);
+        }
+        if (type === "FACULTY") {
+          const response = await axios.get(
+            `http://localhost:8000/api/deliverable/getByFacultyId/${fId}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          setRows(response.data);
+        }
       } catch (error) {
         console.log(error);
       }

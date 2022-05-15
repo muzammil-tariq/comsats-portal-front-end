@@ -27,6 +27,7 @@ export default function AllStudents() {
     };
     getFaculty();
   }, []);
+
   React.useEffect(() => {
     if (faculties) {
       debugger;
@@ -41,6 +42,7 @@ export default function AllStudents() {
       setFaculties(st);
     }
   }, [faculties]);
+
   React.useEffect(() => {
     if (facId) getStudentsByFacultyId();
   }, [facId]);

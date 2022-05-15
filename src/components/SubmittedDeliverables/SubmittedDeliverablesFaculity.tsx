@@ -8,6 +8,8 @@ const SubmittedDeliverablesFaculity = () => {
   const [modalOpenClose, setModalOpenClose] = useState<boolean>(false);
   const [currentRowRubrics, setCurrentRowRubrics] = useState<any>([]);
   const [currentRowId, setCurrentRowId] = useState<string>("");
+  const [comment, setComment] = useState<string>("");
+
   const columns: GridColDef[] = [
     { field: "_id", headerName: "ID", width: 220 },
     { field: "title", headerName: "Title", width: 220 },
@@ -18,15 +20,15 @@ const SubmittedDeliverablesFaculity = () => {
       width: 300,
       renderCell: (params) => {
         return (
-          <div>
-            {params.row.rubrics.map((rubric: any) => {
+          <ul>
+            {params.row.rubrics.map((rubric: any, i: number) => {
               return (
-                <>
+                <li key={i} style={{ lineHeight: "20px" }}>
                   {rubric.title} ({rubric.score}) obtained:{rubric.obtained_score}
-                </>
+                </li>
               );
             })}
-          </div>
+          </ul>
         );
       },
     },
@@ -58,6 +60,7 @@ const SubmittedDeliverablesFaculity = () => {
   const handleOpenModal = async (e: any) => {
     setCurrentRowId(e._id);
     setCurrentRowRubrics(e.rubrics);
+    setComment(e.comments);
     handleModalOpenClose();
   };
 
@@ -78,11 +81,16 @@ const SubmittedDeliverablesFaculity = () => {
     setCurrentRowRubrics(data);
   };
 
+  const handleChangeCommentInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setComment(event.target.value);
+  };
+
   const handleRubricsDataSubmit = async () => {
     debugger;
     const dataToSend = {
       id: currentRowId,
       rubrics: currentRowRubrics,
+      comments: comment,
     };
 
     try {
@@ -107,6 +115,7 @@ const SubmittedDeliverablesFaculity = () => {
       const response = await axios.get("http://localhost:8000/api/submitted_deliverable/", {
         headers: { Authorization: `Bearer ${token}` },
       });
+      debugger;
       setRows(response.data);
     } catch (error) {
       console.log(error);
@@ -163,6 +172,8 @@ const SubmittedDeliverablesFaculity = () => {
               />
             </Box>
           ))}
+          <TextField fullWidth label="Comments" id="Comments" onChange={handleChangeCommentInput} />
+
           <Stack spacing={2} direction="row" className="justify-content-center pt-2">
             <Button variant="contained" onClick={() => handleRubricsDataSubmit()}>
               Submit
